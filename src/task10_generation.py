@@ -10,11 +10,15 @@ Hướng dẫn:
 """
 
 import os
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
 
+sys.stdout.reconfigure(encoding="utf-8")
+sys.path.insert(0, str(Path(__file__).parent))
 load_dotenv()
 
-from .task9_retrieval_pipeline import retrieve
+from task9_retrieval_pipeline import retrieve, build_bm25_index
 
 
 # =============================================================================
@@ -33,6 +37,10 @@ TOP_P = 0.9
 # Chọn 0.3 vì: RAG cần factual, ít sáng tạo
 TEMPERATURE = 0.3
 
+# OpenRouter config
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+MODEL = "openai/gpt-4o-mini"
+
 
 # =============================================================================
 # SYSTEM PROMPT
@@ -49,6 +57,7 @@ guessing.
 
 Rules:
 - Only use information from the provided context
+- Read and synthesize information from ALL documents provided, not just the first one
 - Every factual claim MUST have a citation
 - If context is insufficient, say so clearly
 - Structure your answer with clear paragraphs"""
@@ -75,20 +84,15 @@ def reorder_for_llm(chunks: list[dict]) -> list[dict]:
     Returns:
         List reordered để maximize LLM attention.
     """
-    # TODO: Implement reordering
-    #
-    # if len(chunks) <= 2:
-    #     return chunks
-    #
-    # # Split into first half (important → đầu) and second half (important → cuối)
-    # reordered = []
-    # for i in range(0, len(chunks), 2):
-    #     reordered.append(chunks[i])  # Odd positions go first
-    # for i in range(len(chunks) - 1 - (len(chunks) % 2 == 0), 0, -2):
-    #     reordered.append(chunks[i])  # Even positions go last (reversed)
-    #
-    # return reordered
-    raise NotImplementedError("Implement reorder_for_llm")
+    if len(chunks) <= 2:
+        return chunks
+
+    # Index chẵn → đầu prompt (LLM nhớ tốt)
+    # Index lẻ → cuối prompt (reversed, LLM nhớ tốt)
+    front = [chunks[i] for i in range(0, len(chunks), 2)]
+    back  = [chunks[i] for i in range(1, len(chunks), 2)]
+    back.reverse()
+    return front + back
 
 
 # =============================================================================
@@ -106,18 +110,16 @@ def format_context(chunks: list[dict]) -> str:
     Returns:
         Formatted context string.
     """
-    # TODO: Implement context formatting
-    #
-    # context_parts = []
-    # for i, chunk in enumerate(chunks, 1):
-    #     source = chunk.get("metadata", {}).get("source", f"Source {i}")
-    #     doc_type = chunk.get("metadata", {}).get("type", "unknown")
-    #     context_parts.append(
-    #         f"[Document {i} | Source: {source} | Type: {doc_type}]\n"
-    #         f"{chunk['content']}\n"
-    #     )
-    # return "\n---\n".join(context_parts)
-    raise NotImplementedError("Implement format_context")
+    context_parts = []
+    for i, chunk in enumerate(chunks, 1):
+        meta     = chunk.get("metadata", {})
+        source   = meta.get("source", f"Source {i}")
+        doc_type = meta.get("doc_type") or meta.get("type", "unknown")
+        context_parts.append(
+            f"[Document {i} | Source: {source} | Type: {doc_type}]\n"
+            f"{chunk['content']}"
+        )
+    return "\n\n---\n\n".join(context_parts)
 
 
 # =============================================================================
@@ -129,11 +131,11 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
     End-to-end RAG generation có citation.
 
     Pipeline:
-        1. Retrieve relevant chunks
+        1. Retrieve relevant chunks (Task 9)
         2. Reorder để tránh lost in the middle
         3. Format context với source labels
         4. Build prompt (system + context + query)
-        5. Call LLM
+        5. Call LLM qua OpenRouter
         6. Return answer + sources
 
     Args:
@@ -146,46 +148,50 @@ def generate_with_citation(query: str, top_k: int = TOP_K) -> dict:
             'retrieval_source': str  # 'hybrid' hoặc 'pageindex'
         }
     """
-    # TODO: Implement generation pipeline
-    #
-    # # Step 1: Retrieve
-    # chunks = retrieve(query, top_k=top_k)
-    #
-    # # Step 2: Reorder
-    # reordered = reorder_for_llm(chunks)
-    #
-    # # Step 3: Format context
-    # context = format_context(reordered)
-    #
-    # # Step 4: Build prompt
-    # user_message = f"""Context:\n{context}\n\n---\n\nQuestion: {query}"""
-    #
-    # # Step 5: Call LLM
-    # from openai import OpenAI
-    # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    #
-    # response = client.chat.completions.create(
-    #     model="gpt-4o-mini",
-    #     messages=[
-    #         {"role": "system", "content": SYSTEM_PROMPT},
-    #         {"role": "user", "content": user_message}
-    #     ],
-    #     temperature=TEMPERATURE,
-    #     top_p=TOP_P,
-    # )
-    #
-    # answer = response.choices[0].message.content
-    #
-    # # Step 6: Return
-    # return {
-    #     "answer": answer,
-    #     "sources": chunks,
-    #     "retrieval_source": chunks[0].get("source", "hybrid") if chunks else "none"
-    # }
-    raise NotImplementedError("Implement generate_with_citation")
+    from openai import OpenAI
+
+    # Step 1: Retrieve
+    chunks = retrieve(query, top_k=top_k)
+
+    # Step 2: Reorder để tránh lost in the middle
+    reordered = reorder_for_llm(chunks)
+
+    # Step 3: Format context
+    context = format_context(reordered)
+
+    # Step 4: Build prompt
+    user_message = f"Context:\n\n{context}\n\n---\n\nQuestion: {query}"
+
+    # Step 5: Call LLM qua OpenRouter
+    client = OpenAI(
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url=OPENROUTER_BASE_URL,
+    )
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user",   "content": user_message},
+        ],
+        temperature=TEMPERATURE,
+        top_p=TOP_P,
+    )
+
+    answer = response.choices[0].message.content
+
+    # Step 6: Return
+    return {
+        "answer": answer,
+        "sources": chunks,
+        "retrieval_source": chunks[0].get("source", "hybrid") if chunks else "none",
+    }
 
 
 if __name__ == "__main__":
+    print("Building BM25 index...")
+    build_bm25_index()
+
     test_queries = [
         "Hình phạt cho tội tàng trữ trái phép chất ma tuý theo pháp luật Việt Nam?",
         "Những nghệ sĩ nào đã bị bắt vì liên quan tới ma tuý?",
