@@ -13,5 +13,70 @@
     "question": "Danh mục các chất ma tuý thuộc nhóm I theo quy định pháp luật Việt Nam gồm những chất nào?",
     "expected_answer": "Nhóm I gồm các chất ma tuý tuyệt đối cấm sử dụng trong y học và đời sống, bao gồm heroin, cocaine, methamphetamine, MDMA (ecstasy), cannabis (cần sa), và các chất tương tự.",
     "expected_context": "Nghị định 57/2022/NĐ-CP, Phụ lục I"
+  },
+  {
+    "question": "Hình phạt tội mua bán trái phép chất ma tuý theo pháp luật Việt Nam là gì?",
+    "expected_answer": "Tội mua bán trái phép chất ma tuý theo Điều 251 Bộ luật Hình sự bị phạt tù từ 2 đến 7 năm. Trường hợp nghiêm trọng có thể bị phạt tù 20 năm, tù chung thân hoặc tử hình.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 251"
+  },
+  {
+    "question": "Người sử dụng trái phép chất ma tuý bị xử lý như thế nào theo pháp luật Việt Nam?",
+    "expected_answer": "Người sử dụng trái phép chất ma tuý bị xử phạt hành chính, đưa vào cơ sở cai nghiện bắt buộc nếu tái phạm nhiều lần. Không bị xử lý hình sự về tội sử dụng ma tuý.",
+    "expected_context": "Luật Phòng chống ma tuý 2021; Nghị định 144/2021/NĐ-CP"
+  },
+  {
+    "question": "Điều kiện để được áp dụng biện pháp cai nghiện bắt buộc là gì?",
+    "expected_answer": "Cai nghiện bắt buộc áp dụng với người nghiện ma tuý từ đủ 18 tuổi trở lên đã được giáo dục tại xã, phường, thị trấn mà vẫn còn nghiện hoặc không có nơi cư trú ổn định.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 32"
+  },
+  {
+    "question": "Tội vận chuyển trái phép chất ma tuý bị xử phạt như thế nào?",
+    "expected_answer": "Tội vận chuyển trái phép chất ma tuý theo Điều 250 Bộ luật Hình sự bị phạt tù từ 2 đến 7 năm. Trường hợp đặc biệt nghiêm trọng có thể bị phạt tù đến 20 năm hoặc tù chung thân.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 250"
+  },
+  {
+    "question": "Cơ quan nào có thẩm quyền quyết định đưa người vào cơ sở cai nghiện bắt buộc?",
+    "expected_answer": "Toà án nhân dân cấp huyện có thẩm quyền quyết định áp dụng biện pháp đưa vào cơ sở cai nghiện bắt buộc theo quy định của Luật Phòng chống ma tuý 2021.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 33"
+  },
+  {
+    "question": "Pháp luật quy định thế nào về trách nhiệm của gia đình trong phòng chống ma tuý?",
+    "expected_answer": "Gia đình có trách nhiệm giáo dục thành viên về tác hại ma tuý, phát hiện và báo cáo cơ quan có thẩm quyền khi có thành viên sử dụng ma tuý, quản lý người cai nghiện tại gia đình.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 10"
+  },
+  {
+    "question": "Tổ chức, cá nhân vi phạm quy định về kiểm soát tiền chất ma tuý bị xử lý như thế nào?",
+    "expected_answer": "Tổ chức, cá nhân vi phạm quy định về kiểm soát tiền chất ma tuý bị xử phạt hành chính hoặc truy cứu trách nhiệm hình sự tùy mức độ vi phạm theo Điều 253 Bộ luật Hình sự.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 253; Luật Phòng chống ma tuý 2021"
+  },
+  {
+    "question": "Thời gian cai nghiện bắt buộc tại cơ sở là bao lâu theo quy định hiện hành?",
+    "expected_answer": "Thời gian cai nghiện bắt buộc tại cơ sở cai nghiện là từ 12 tháng đến 24 tháng theo quy định của Luật Phòng chống ma tuý 2021.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 34"
+  },
+  {
+    "question": "Tội trồng cây có chứa chất ma tuý bị xử phạt như thế nào?",
+    "expected_answer": "Tội trồng cây thuốc phiện, cây côca, cây cần sa hoặc các loại cây khác có chứa chất ma tuý theo Điều 247 Bộ luật Hình sự bị phạt tù từ 6 tháng đến 3 năm.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 247"
+  },
+  {
+    "question": "Quy định về xử lý người chưa thành niên vi phạm pháp luật về ma tuý như thế nào?",
+    "expected_answer": "Người chưa thành niên vi phạm pháp luật về ma tuý được xử lý theo nguyên tắc ưu tiên giáo dục, phòng ngừa. Hình phạt áp dụng nhẹ hơn người thành niên, chú trọng biện pháp tư pháp thay thế.",
+    "expected_context": "Bộ luật Hình sự 2015, Chương XII; Luật Phòng chống ma tuý 2021"
+  },
+  {
+    "question": "Chính sách của Nhà nước Việt Nam về phòng chống ma tuý là gì?",
+    "expected_answer": "Nhà nước thực hiện phòng chống ma tuý toàn diện, kết hợp phòng ngừa, giáo dục với đấu tranh, xử lý vi phạm; huy động mọi lực lượng xã hội tham gia phòng chống ma tuý.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 4"
+  },
+  {
+    "question": "Hành vi tổ chức sử dụng trái phép chất ma tuý bị xử lý như thế nào?",
+    "expected_answer": "Hành vi tổ chức sử dụng trái phép chất ma tuý theo Điều 255 Bộ luật Hình sự bị phạt tù từ 2 đến 7 năm. Phạm tội có tổ chức hoặc đối với người dưới 18 tuổi bị phạt tù từ 7 đến 15 năm.",
+    "expected_context": "Bộ luật Hình sự 2015, Điều 255"
+  },
+  {
+    "question": "Người nghiện ma tuý tự nguyện cai nghiện được hưởng những quyền lợi gì?",
+    "expected_answer": "Người nghiện ma tuý tự nguyện cai nghiện được hỗ trợ kinh phí cai nghiện, được tư vấn tâm lý, hỗ trợ tái hoà nhập cộng đồng và không bị áp dụng biện pháp cai nghiện bắt buộc trong thời gian tự nguyện cai.",
+    "expected_context": "Luật Phòng chống ma tuý 2021, Điều 29-31"
   }
 ]
